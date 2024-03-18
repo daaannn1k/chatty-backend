@@ -40,7 +40,7 @@ export class JoiRequestValidationError extends CustomError {
 }
 
 export class BadRequestError extends CustomError {
-  statusCode = HTTP_STATUS.BAD_REQUEST;
+  statusCode = HTTP_STATUS.UNAUTHORIZED;
   status = 'error';
 
   constructor(message: string) {

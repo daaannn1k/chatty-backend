@@ -8,7 +8,7 @@ import { joiValidation } from '@global/decorators/joi-validation.decorators';
 import { BadRequestError, NotAuthorizedError } from '@global/helpers/error-handler';
 import { loginSchema } from '@auth/schemes/signin';
 import { IAuthDocument } from '@auth/interfaces/auth.interface';
-import { IUserDocument } from '@user/interfaces/user.interace';
+import {  IUserDocument } from '@user/interfaces/user.interace';
 import { userService } from '@services/db/user.service';
 
 export class SignIn {
@@ -16,7 +16,7 @@ export class SignIn {
   public async read(req: Request, res: Response): Promise<void> {
     const { username, password } = req.body;
 
-    const userExist: IAuthDocument = await authService.getAuthUserByUsername(username);
+    const userExist: IAuthDocument | null = await authService.getAuthUserByUsername(username);
     if (!userExist) {
       throw new BadRequestError('Invalid credentials');
     }
@@ -48,6 +48,7 @@ export class SignIn {
       avatarColor: userExist!.avatarColor,
       createdAt: userExist!.createdAt
     } as IUserDocument;
+
     req.session = { jwt: userJWT };
     res.status(HTTP_STATUS.OK).json({ message: 'User login successfully', user: userDocument, token: userJWT });
   }

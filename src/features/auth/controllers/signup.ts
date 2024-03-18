@@ -1,19 +1,19 @@
 import { ObjectId } from 'mongodb';
 import { Request, Response } from 'express';
-import { joiValidation } from '@global/decorators/joi-validation.decorators';
-import { signupSchema } from '@auth/schemes/signup';
-import { authService } from '@services/db/auth.service';
-import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface';
-import { BadRequestError } from '@global/helpers/error-handler';
-import { Helpers } from '@global/helpers/helpers';
-import { uploads } from '@global/helpers/cloudinary-upload';
 import { UploadApiResponse } from 'cloudinary';
-import { IUserDocument } from '@user/interfaces/user.interace';
-import { UserCache } from '@services/redis/user.cache';
 import { omit } from 'lodash';
 import JWT from 'jsonwebtoken';
 import HTTP_STATUS from 'http-status-codes';
 
+import { joiValidation } from '@global/decorators/joi-validation.decorators';
+import { signupSchema } from '@auth/schemes/signup';
+import { authService } from '@services/db/auth.service';
+import { IAuthDocument, ISignUpData } from '@auth/interfaces/auth.interface';
+import { Helpers } from '@global/helpers/helpers';
+import { uploads } from '@global/helpers/cloudinary-upload';
+import { IUserDocument } from '@user/interfaces/user.interace';
+import { UserCache } from '@services/redis/user.cache';
+import { BadRequestError } from '@global/helpers/error-handler';
 import { authQueue } from '@services/queues/auth.queue';
 import { userQueue } from '@services/queues/user.queue';
 import { config } from '@root/config';
@@ -24,7 +24,7 @@ export class SignUp {
   @joiValidation(signupSchema)
   public async create(req: Request, res: Response): Promise<void> {
     const { username, password, email, avatarColor, avatarImage } = req.body;
-    const userExist: IAuthDocument = await authService.getUserByUsernameOrEmail(username, email);
+    const userExist: IAuthDocument | null = await authService.getUserByUsernameOrEmail(username, email);
 
     if (userExist) {
       throw new BadRequestError('Invalid credentials');
@@ -32,8 +32,6 @@ export class SignUp {
 
     const authObjectId: ObjectId = new ObjectId();
     const userObjectId: ObjectId = new ObjectId();
-    console.log('AUTHOBJECTID', authObjectId);
-    console.log('USEROBJECTID', userObjectId);
     const uId = `${Helpers.generateRandomIntegers(12)}`;
     const authData: IAuthDocument = SignUp.prototype.signupData({
       _id: authObjectId,
