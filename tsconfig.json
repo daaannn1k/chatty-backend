@@ -30,6 +30,7 @@
       "@services/*": ["src/shared/services/*"],
       "@socket/*": ["src/shared/sockets/*"],
       "@workers/*": ["src/shared/workers/*"],
+      "@mocks/*": ["src/mocks/*"],
       "@root/*": ["src/*"]
     }
   }
