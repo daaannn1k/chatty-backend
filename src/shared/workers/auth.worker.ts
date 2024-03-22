@@ -10,8 +10,6 @@ class AuthWorker {
   async addAuthUserToDB(job: Job, done: DoneCallback): Promise<void> {
     try {
       const { value } = job.data;
-      console.log(value);
-      //add method to send data to database
       await authService.createAuthUser(value);
       job.progress(100);
       done(null, job.data);
