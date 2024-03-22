@@ -17,35 +17,35 @@ import { resetTemplate } from '@services/emails/templates/reset-password/reset-p
 
 export class Password {
   @joiValidation(emailSchema)
-  public async create(req:Request, res:Response): Promise<void> {
+  public async create(req: Request, res: Response): Promise<void> {
     const { email } = req.body;
 
     const foundUser: IAuthDocument | null = await authService.getAuthUserByEmail(email);
 
-    if(!foundUser) {
+    if (!foundUser) {
       throw new BadRequestError('Invalid credentials');
     }
 
     const randomBytes: Buffer = await Promise.resolve(crypto.randomBytes(20));
     const randomCharacters: string = randomBytes.toString('hex');
 
-    await authService.updatePasswordToken(`${foundUser._id}`, randomCharacters, Date.now() + (60 * 60 * 1000));
+    await authService.updatePasswordToken(`${foundUser._id}`, randomCharacters, Date.now() + 60 * 60 * 1000);
 
     const resetLink = `${config.CLIENT_URL}/reset-password?token=${randomCharacters}`;
     const template: string = forgotTemplate.passwordResetTemplate(foundUser.username, resetLink);
-    emailQueue.addEmailJob('forgotEmailPassword', { receiverEmail: foundUser.email, subject: 'Forgot password', template});
+    emailQueue.addEmailJob('forgotEmailPassword', { receiverEmail: foundUser.email, subject: 'Forgot password', template });
 
-    res.status(HTTP_STATUS.OK).json({ message: 'Password reset email sent'});
+    res.status(HTTP_STATUS.OK).json({ message: 'Password reset email sent' });
   }
 
   @joiValidation(passwordSchema)
-  public async update(req:Request, res:Response): Promise<void> {
+  public async update(req: Request, res: Response): Promise<void> {
     const { password } = req.body;
     const { token } = req.params;
 
     const foundUser: IAuthDocument | null = await authService.getAuthUserByPasswordToken(token);
 
-    if(!foundUser) {
+    if (!foundUser) {
       throw new BadRequestError('Reset token has expired');
     }
 
@@ -59,12 +59,12 @@ export class Password {
       username: foundUser.username,
       email: foundUser.username,
       ipaddress: publicIP.address(),
-      date: moment().format('DD/MM/YYYY HH:mm'),
+      date: moment().format('DD/MM/YYYY HH:mm')
     };
 
     const template: string = resetTemplate.passwordResetConfirmationTemplate(templateParams);
-    emailQueue.addEmailJob('forgotEmailPassword', { receiverEmail: foundUser.email, subject: 'Reset password', template});
+    emailQueue.addEmailJob('forgotEmailPassword', { receiverEmail: foundUser.email, subject: 'Reset password', template });
 
-    res.status(HTTP_STATUS.OK).json({ message: 'Password successfully updated'});
+    res.status(HTTP_STATUS.OK).json({ message: 'Password successfully updated' });
   }
 }

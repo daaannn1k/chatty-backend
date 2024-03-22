@@ -21,16 +21,16 @@ export const mergedAuthAndUserData: IUserDocument = {
     messages: false,
     reactions: false,
     comments: false,
-    follows: false,
+    follows: false
   },
   social: {
     facebook: '',
     instagram: '',
     twitter: '',
-    youtube: '',
+    youtube: ''
   },
   bgImageVersion: '',
   bgImageId: '',
   profilePicture: '',
-  createdAt: '2022-08-31T07:42:24.451Z',
+  createdAt: '2022-08-31T07:42:24.451Z'
 } as unknown as IUserDocument;

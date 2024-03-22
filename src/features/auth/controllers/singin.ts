@@ -8,7 +8,7 @@ import { joiValidation } from '@global/decorators/joi-validation.decorators';
 import { BadRequestError, NotAuthorizedError } from '@global/helpers/error-handler';
 import { loginSchema } from '@auth/schemes/signin';
 import { IAuthDocument } from '@auth/interfaces/auth.interface';
-import {  IUserDocument } from '@user/interfaces/user.interace';
+import { IUserDocument } from '@user/interfaces/user.interace';
 import { userService } from '@services/db/user.service';
 
 export class SignIn {

@@ -1,4 +1,4 @@
-import { Request, Response} from 'express';
+import { Request, Response } from 'express';
 import * as cloudinary from '@global/helpers/cloudinary-upload';
 import { authMock, authMockReq, authMoqRes } from '@mocks/auth.mock';
 import { SignUp } from '../signup';
@@ -12,8 +12,7 @@ jest.mock('@services/queues/auth.queue');
 jest.mock('@services/redis/user.cache');
 jest.mock('@global/helpers/cloudinary-upload');
 
-describe(('Signup'), () => {
-
+describe('Signup', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -22,15 +21,17 @@ describe(('Signup'), () => {
     jest.clearAllMocks();
   });
 
-  it('should throw an error if username is not available', async() =>{
-    const req: Request = authMockReq({},
+  it('should throw an error if username is not available', async () => {
+    const req: Request = authMockReq(
+      {},
       {
         username: '',
         email: 'test@gmail.com',
         password: '1234567',
         avatarColor: '#ffff',
         avatarImage: 'https://test.com'
-      }) as Request;
+      }
+    ) as Request;
     const res: Response = authMoqRes();
 
     await SignUp.prototype.create(req, res).catch((error: CustomError) => {
@@ -39,15 +40,17 @@ describe(('Signup'), () => {
     });
   });
 
-  it('should throw an error if username is less then minimun length', async() =>{
-    const req: Request = authMockReq({},
+  it('should throw an error if username is less then minimun length', async () => {
+    const req: Request = authMockReq(
+      {},
       {
         username: 'spy',
         email: 'test@gmail.com',
         password: '1234567',
         avatarColor: '#ffff',
         avatarImage: 'https://test.com'
-      }) as Request;
+      }
+    ) as Request;
     const res: Response = authMoqRes();
 
     await SignUp.prototype.create(req, res).catch((error: CustomError) => {
@@ -56,15 +59,17 @@ describe(('Signup'), () => {
     });
   });
 
-  it('should throw an error if email is not valid', async() =>{
-    const req: Request = authMockReq({},
+  it('should throw an error if email is not valid', async () => {
+    const req: Request = authMockReq(
+      {},
       {
         username: 'spyman',
         email: 'not valid',
         password: '1234567',
         avatarColor: '#ffff',
         avatarImage: 'https://test.com'
-      }) as Request;
+      }
+    ) as Request;
     const res: Response = authMoqRes();
 
     await SignUp.prototype.create(req, res).catch((error: CustomError) => {
@@ -73,15 +78,17 @@ describe(('Signup'), () => {
     });
   });
 
-  it('should throw an error if email is missing', async() =>{
-    const req: Request = authMockReq({},
+  it('should throw an error if email is missing', async () => {
+    const req: Request = authMockReq(
+      {},
       {
         username: 'spyman',
         email: '',
         password: '1234567',
         avatarColor: '#ffff',
         avatarImage: 'https://test.com'
-      }) as Request;
+      }
+    ) as Request;
     const res: Response = authMoqRes();
 
     await SignUp.prototype.create(req, res).catch((error: CustomError) => {
@@ -90,15 +97,17 @@ describe(('Signup'), () => {
     });
   });
 
-  it('should throw an error if password is missing', async() =>{
-    const req: Request = authMockReq({},
+  it('should throw an error if password is missing', async () => {
+    const req: Request = authMockReq(
+      {},
       {
         username: 'spyman',
         email: 'spyman@gmail.com',
         password: '',
         avatarColor: '#ffff',
         avatarImage: 'https://test.com'
-      }) as Request;
+      }
+    ) as Request;
     const res: Response = authMoqRes();
 
     await SignUp.prototype.create(req, res).catch((error: CustomError) => {
@@ -107,15 +116,17 @@ describe(('Signup'), () => {
     });
   });
 
-  it('should throw an error if password length is less then required', async() =>{
-    const req: Request = authMockReq({},
+  it('should throw an error if password length is less then required', async () => {
+    const req: Request = authMockReq(
+      {},
       {
         username: 'spyman',
         email: 'spyman@gmail.com',
         password: '123',
         avatarColor: '#ffff',
         avatarImage: 'https://test.com'
-      }) as Request;
+      }
+    ) as Request;
     const res: Response = authMoqRes();
 
     await SignUp.prototype.create(req, res).catch((error: CustomError) => {
@@ -125,14 +136,16 @@ describe(('Signup'), () => {
   });
 
   it('should throw an authorized error if user already exists', async () => {
-    const req: Request = authMockReq({},
+    const req: Request = authMockReq(
+      {},
       {
         username: 'Manny',
         email: 'manny@me.com',
         password: '1234567',
         avatarColor: '#9c27b0',
         avatarImage: 'https://test.com'
-      }) as Request;
+      }
+    ) as Request;
     const res: Response = authMoqRes();
 
     jest.spyOn(authService, 'getUserByUsernameOrEmail').mockResolvedValue(authMock);
@@ -144,14 +157,16 @@ describe(('Signup'), () => {
   });
 
   it('should create a new user with valid credentials and send back a correct json response', async () => {
-    const req: Request = authMockReq({},
+    const req: Request = authMockReq(
+      {},
       {
         username: 'spyman',
         email: 'spyman@me.com',
         password: '1234567',
         avatarColor: '#9c27b0',
         avatarImage: 'https://test.com'
-      }) as Request;
+      }
+    ) as Request;
     const res: Response = authMoqRes();
 
     const userSpy = jest.spyOn(UserCache.prototype, 'saveUserToCache');
@@ -159,7 +174,7 @@ describe(('Signup'), () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     jest.spyOn(authService, 'getUserByUsernameOrEmail').mockResolvedValue(null as any);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    jest.spyOn(cloudinary, 'uploads').mockResolvedValue({ public_id: '1'} as any);
+    jest.spyOn(cloudinary, 'uploads').mockResolvedValue({ public_id: '1' } as any);
 
     await SignUp.prototype.create(req, res);
     expect(req.session?.jwt).toBeDefined();
