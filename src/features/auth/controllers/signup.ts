@@ -58,7 +58,6 @@ export class SignUp {
 
     omit(userDataForCache, ['username', 'password', 'uId', 'avatarColor', 'email']);
 
-    //To check it later
     const authUserToSave: IUserDocument = { ...userDataForCache, _id: authObjectId } as IUserDocument;
     authQueue.addAuthUserJob('addAuthUserToDB', { value: authUserToSave });
     userQueue.addUserJob('addUserToDB', { value: userDataForCache });

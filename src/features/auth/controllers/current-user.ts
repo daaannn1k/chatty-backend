@@ -14,7 +14,6 @@ export class CurrentUser {
     let user = null;
 
     const cachedUser: IUserDocument = (await userCache.getUserFromCache(`${req.currentUser!.userId}`)) as IUserDocument;
-    console.log('CACHED USER', cachedUser);
     const existingUser: IUserDocument = cachedUser ? cachedUser : await userService.getUserById(`${req.currentUser!.userId}`);
 
     if (Object.keys(existingUser).length) {
