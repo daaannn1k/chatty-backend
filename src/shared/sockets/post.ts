@@ -11,7 +11,7 @@ export class SocketIOPostHandler {
   }
 
   public listen(): void {
-    this.io.on('connection', (socket: Socket)=> {
+    this.io.on('connection', (socket: Socket) => {
       console.log('Posts socket IO handler');
     });
   }

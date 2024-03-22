@@ -37,26 +37,26 @@ export class UserCache extends BaseCache {
     } = createdUser;
 
     const dataToSave = {
-      '_id':`${_id}`,
-      'uId':`${uId}`,
-      'username':`${username}`,
-      'email':`${email}`,
-      'avatarColor':`${avatarColor}`,
-      'createdAt':`${createdAt}`,
-      'postsCount':`${postsCount}`,
-      'blocked':JSON.stringify(blocked),
-      'blockedBy':JSON.stringify(blockedBy),
-      'profilePicture':`${profilePicture}`,
-      'followersCount':`${followersCount}`,
-      'followingCount':`${followingCount}`,
-      'notifications':JSON.stringify(notifications),
-      'social':JSON.stringify(social),
-      'work':`${work}`,
-      'location':`${location}`,
-      'school':`${school}`,
-      'quote':`${quote}`,
-      'bgImageId':`${bgImageId}`,
-      'bgImageVersion':`${bgImageVersion}`
+      _id: `${_id}`,
+      uId: `${uId}`,
+      username: `${username}`,
+      email: `${email}`,
+      avatarColor: `${avatarColor}`,
+      createdAt: `${createdAt}`,
+      postsCount: `${postsCount}`,
+      blocked: JSON.stringify(blocked),
+      blockedBy: JSON.stringify(blockedBy),
+      profilePicture: `${profilePicture}`,
+      followersCount: `${followersCount}`,
+      followingCount: `${followingCount}`,
+      notifications: JSON.stringify(notifications),
+      social: JSON.stringify(social),
+      work: `${work}`,
+      location: `${location}`,
+      school: `${school}`,
+      quote: `${quote}`,
+      bgImageId: `${bgImageId}`,
+      bgImageVersion: `${bgImageVersion}`
     };
 
     try {
@@ -64,7 +64,7 @@ export class UserCache extends BaseCache {
         await this.client.connect();
       }
       await this.client.ZADD('user', { score: parseInt(userUId, 10), value: `${key}` });
-      for(const [itemKey, itemValue] of Object.entries(dataToSave)) {
+      for (const [itemKey, itemValue] of Object.entries(dataToSave)) {
         await this.client.HSET(`users:${key}`, `${itemKey}`, `${itemValue}`);
       }
     } catch (error) {
@@ -92,4 +92,3 @@ export class UserCache extends BaseCache {
     }
   }
 }
-

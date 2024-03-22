@@ -3,7 +3,14 @@ import { Request, Response } from 'express';
 import { Server } from 'socket.io';
 import { authUserPayload } from '@root/mocks/auth.mock';
 import * as postServer from '@socket/post';
-import { postMockData, postMockRequest, postMockResponse, updatedPost, updatedPostMockData, updatedPostWithImage } from '@root/mocks/post.mock';
+import {
+  postMockData,
+  postMockRequest,
+  postMockResponse,
+  updatedPost,
+  updatedPostMockData,
+  updatedPostWithImage
+} from '@root/mocks/post.mock';
 import { PostCache } from '@services/redis/post.cache';
 import { postQueue } from '@services/queues/post.queue';
 import { Update } from '@post/controllers/update-post';
@@ -60,9 +67,10 @@ describe('Update', () => {
       updatedPost.imgId = '1234';
       updatedPost.imgVersion = '1234';
       updatedPost.post = updatedPostWithImage.post;
-      const postUpdatedWithImage = { ...updatedPostMockData, post: updatedPostWithImage.post} as IPostDocument;
+      const postUpdatedWithImage = { ...updatedPostMockData, post: updatedPostWithImage.post } as IPostDocument;
       const req: Request = postMockRequest(updatedPostWithImage, authUserPayload, { postId: `${postMockData._id}` }) as Request;
       const res: Response = postMockResponse();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const postSpy = jest.spyOn(PostCache.prototype, 'updatePostInCache').mockResolvedValue(postUpdatedWithImage);
       jest.spyOn(postServer.socketIOPostObject, 'emit');
       jest.spyOn(postQueue, 'addPostJob');
@@ -84,10 +92,10 @@ describe('Update', () => {
       updatedPost.imgVersion = '1234';
       updatedPost.post = updatedPostWithImage.post;
       updatedPostWithImage.image = 'data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==';
-      const postUpdatedWithImage = { ...postMockData, post: updatedPostWithImage.post} as IPostDocument;
+      const postUpdatedWithImage = { ...postMockData, post: updatedPostWithImage.post } as IPostDocument;
       const req: Request = postMockRequest(updatedPostWithImage, authUserPayload, { postId: `${postMockData._id}` }) as Request;
       const res: Response = postMockResponse();
-      const postSpy = jest.spyOn(PostCache.prototype, 'updatePostInCache').mockResolvedValue(postUpdatedWithImage);;
+      const postSpy = jest.spyOn(PostCache.prototype, 'updatePostInCache').mockResolvedValue(postUpdatedWithImage);
       jest.spyOn(cloudinaryUploads, 'uploads').mockImplementation((): any => Promise.resolve({ version: '1234', public_id: '123456' }));
       jest.spyOn(postServer.socketIOPostObject, 'emit');
       jest.spyOn(postQueue, 'addPostJob');

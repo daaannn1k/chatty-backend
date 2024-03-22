@@ -23,12 +23,9 @@ class PostRoutes {
     this.router.put('/post/:postId', authMiddleware.checkAuthentication, Update.prototype.post);
     this.router.put('/post/image/:postId', authMiddleware.checkAuthentication, Update.prototype.postWithImage);
 
-    this.router.delete('/post/:postId', authMiddleware.checkAuthentication, Delete.prototype.post)
-    ;
+    this.router.delete('/post/:postId', authMiddleware.checkAuthentication, Delete.prototype.post);
     return this.router;
   }
-
-
 }
 
 export const postRoutes: PostRoutes = new PostRoutes();

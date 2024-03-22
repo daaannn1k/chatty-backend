@@ -36,17 +36,22 @@ export class Create {
       imgVersion: '',
       imgId: '',
       createdAt: new Date(),
-      reactions: { like: 0, love: 0, happy: 0, wow: 0, sad: 0, angry: 0}
+      reactions: { like: 0, love: 0, happy: 0, wow: 0, sad: 0, angry: 0 }
     } as IPostDocument;
 
     socketIOPostObject.emit('add post', createdPost);
 
-    const cacheDataToSave: ISavePostToCache = { key: postObjectId, currentUserId: `${req.currentUser!.userId}`, uId: `${req.currentUser!.uId}`, createdPost };
+    const cacheDataToSave: ISavePostToCache = {
+      key: postObjectId,
+      currentUserId: `${req.currentUser!.userId}`,
+      uId: `${req.currentUser!.uId}`,
+      createdPost
+    };
 
     await postCache.savePostToCache(cacheDataToSave);
     postQueue.addPostJob('addPostToDB', { key: req.currentUser!.userId, value: createdPost });
 
-    res.status(HTTP_STATUS.CREATED).json({ message: 'Post created successfully'});
+    res.status(HTTP_STATUS.CREATED).json({ message: 'Post created successfully' });
   }
 
   @joiValidation(postWithImageSchema)
@@ -76,18 +81,23 @@ export class Create {
       imgVersion: result.version.toString(),
       imgId: result.public_id,
       createdAt: new Date(),
-      reactions: { like: 0, love: 0, happy: 0, wow: 0, sad: 0, angry: 0}
+      reactions: { like: 0, love: 0, happy: 0, wow: 0, sad: 0, angry: 0 }
     } as IPostDocument;
 
     socketIOPostObject.emit('add post', createdPost);
 
-    const cacheDataToSave: ISavePostToCache = { key: postObjectId, currentUserId: `${req.currentUser!.userId}`, uId: `${req.currentUser!.uId}`, createdPost };
+    const cacheDataToSave: ISavePostToCache = {
+      key: postObjectId,
+      currentUserId: `${req.currentUser!.userId}`,
+      uId: `${req.currentUser!.uId}`,
+      createdPost
+    };
 
     await postCache.savePostToCache(cacheDataToSave);
     postQueue.addPostJob('addPostToDB', { key: req.currentUser!.userId, value: createdPost });
 
     // call image queue to add image into database
 
-    res.status(HTTP_STATUS.CREATED).json({ message: 'Post with image created successfully'});
+    res.status(HTTP_STATUS.CREATED).json({ message: 'Post with image created successfully' });
   }
 }

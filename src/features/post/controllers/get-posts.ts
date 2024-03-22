@@ -9,7 +9,7 @@ const postCache: PostCache = new PostCache();
 const PAGE_SIZE = 10;
 
 export class Get {
-  public async posts(req: Request, res:Response): Promise<void> {
+  public async posts(req: Request, res: Response): Promise<void> {
     const { page } = req.params;
     const skip: number = PAGE_SIZE * (parseInt(page) - 1);
     const limit: number = PAGE_SIZE * parseInt(page); //TO THINK ABOUT IT;
@@ -18,7 +18,7 @@ export class Get {
     let totalPosts = 0;
     const cachedPosts: IPostDocument[] = await postCache.getPostsFromCache('post', newSkip, limit);
 
-    if(cachedPosts.length) {
+    if (cachedPosts.length) {
       posts = cachedPosts;
       totalPosts = await postCache.getTotalPostsInCache(); //TO THINK ABOUT IT;
     } else {
@@ -28,7 +28,7 @@ export class Get {
     res.status(HTTP_STATUS.OK).json({ message: 'All posts', posts, totalPosts });
   }
 
-  public async postsWithImages(req: Request, res:Response): Promise<void> {
+  public async postsWithImages(req: Request, res: Response): Promise<void> {
     const { page } = req.params;
     const skip: number = PAGE_SIZE * (parseInt(page) - 1);
     const limit: number = PAGE_SIZE * parseInt(page); //TO THINK ABOUT IT;

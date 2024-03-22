@@ -21,7 +21,9 @@ class AuthService {
   }
 
   public async getAuthUserByUsername(username: string): Promise<IAuthDocument | null> {
-    const user: IAuthDocument | null = (await AuthModel.findOne({ username: Helpers.firstLetterUppercase(username) }).exec()) as IAuthDocument | null;
+    const user: IAuthDocument | null = (await AuthModel.findOne({
+      username: Helpers.firstLetterUppercase(username)
+    }).exec()) as IAuthDocument | null;
     return user;
   }
 
@@ -31,7 +33,10 @@ class AuthService {
   }
 
   public async getAuthUserByPasswordToken(token: string): Promise<IAuthDocument | null> {
-    const user: IAuthDocument | null = (await AuthModel.findOne({ passwordResetToken: token, passwordResetExpires: { $gt: Date.now()} }).exec()) as IAuthDocument | null;
+    const user: IAuthDocument | null = (await AuthModel.findOne({
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: Date.now() }
+    }).exec()) as IAuthDocument | null;
     return user;
   }
 }

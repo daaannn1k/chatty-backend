@@ -1,13 +1,12 @@
 import { AuthPayload, IAuthDocument } from '@auth/interfaces/auth.interface';
 import { Response } from 'express';
 
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const authMockReq = (sessionData: IJWT, body: IAuthMock, currentUser?: AuthPayload | null, params?: any) => ({
   session: sessionData,
   body,
   params,
-  currentUser,
+  currentUser
 });
 
 export const authMoqRes = (): Response => {
@@ -18,7 +17,7 @@ export const authMoqRes = (): Response => {
 };
 
 export interface IJWT {
-  jwt?: string,
+  jwt?: string;
 }
 
 export interface IAuthMock {
@@ -69,27 +68,27 @@ export const authMock = {
 } as unknown as IAuthDocument;
 
 export const signUpMockData = {
-    _id: '65f060a14feaaea37dc2fa83',
-    username: 'Manny',
-    email: 'manny@me.com',
-    uId: '670986261367',
-    password: '12345678',
-    avatarColor: '#fffffff',
-    avatarImage: '',
-    createdAt: new Date(),
-    currentPassword: '12345678',
-    newPassword: '1234567',
-    confirmPassword: '1234567',
-    quote: '',
-    work: '',
-    school: '',
-    location: '',
-    facebook: '',
-    instagram: '',
-    twitter: '',
-    youtube: '',
-    messages: true,
-    reactions: true,
-    comments: true,
-    follows: true,
+  _id: '65f060a14feaaea37dc2fa83',
+  username: 'Manny',
+  email: 'manny@me.com',
+  uId: '670986261367',
+  password: '12345678',
+  avatarColor: '#fffffff',
+  avatarImage: '',
+  createdAt: new Date(),
+  currentPassword: '12345678',
+  newPassword: '1234567',
+  confirmPassword: '1234567',
+  quote: '',
+  work: '',
+  school: '',
+  location: '',
+  facebook: '',
+  instagram: '',
+  twitter: '',
+  youtube: '',
+  messages: true,
+  reactions: true,
+  comments: true,
+  follows: true
 };
