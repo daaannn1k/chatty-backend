@@ -2,7 +2,8 @@ import { config } from '@root/config';
 import Logger from 'bunyan';
 
 import { BaseCache } from '@services/redis/base.cache';
-import { IPostDocument, IReactions, ISavePostToCache } from '@post/interfaces/post.interface';
+import { IPostDocument, ISavePostToCache } from '@post/interfaces/post.interface';
+import { IReactions } from '@reactions/interfaces/reaction.interface';
 import { ServerError } from '@global/helpers/error-handler';
 import { Helpers } from '@global/helpers/helpers';
 import { RedisCommandRawReply } from '@redis/client/dist/lib/commands';
@@ -89,7 +90,6 @@ export class PostCache extends BaseCache {
       }
 
       const replies: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
-      console.log('REPLIES', replies);
       const postReplies: IPostDocument[] = [];
 
       for (const post of replies as IPostDocument[]) {
