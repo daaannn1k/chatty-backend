@@ -11,6 +11,7 @@ import { createAdapter } from '@socket.io/redis-adapter';
 import compression from 'compression';
 import 'express-async-errors';
 import Logger from 'bunyan';
+import listAppEndpoints from 'express-list-endpoints';
 
 import { config } from '@root/config';
 import applicationRoutes from '@root/routes';
@@ -68,6 +69,7 @@ export class ChattyServer {
   }
 
   private globalErrorHandler(app: Application): void {
+    console.log(listAppEndpoints(app._router));
     app.all('*', (req: Request, res: Response) => {
       res.status(HTTP_STATUS.NOT_FOUND).json({ message: `${req.originalUrl} not found` });
     });

@@ -28,6 +28,7 @@
       "@user/*": ["src/features/user/*"],
       "@post/*": ["src/features/post/*"],
       "@reactions/*": ["src/features/reactions/*"],
+      "@comments/*": ["src/features/comments/*"],
       "@global/*": ["src/shared/globals/*"],
       "@services/*": ["src/shared/services/*"],
       "@socket/*": ["src/shared/sockets/*"],
