@@ -1,4 +1,3 @@
-
 import { Add } from '@comments/controllers/add-comment';
 import { Get } from '@comments/controllers/get-comments';
 import { authMiddleware } from '@global/helpers/auth-middleware';

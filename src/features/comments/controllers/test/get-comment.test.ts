@@ -129,7 +129,10 @@ describe('Get', () => {
       jest.spyOn(CommentsCache.prototype, 'getSingleCommentFromCache').mockResolvedValue([commentsData]);
 
       await Get.prototype.singleComment(req, res);
-      expect(CommentsCache.prototype.getSingleCommentFromCache).toHaveBeenCalledWith('6027f77087c9d9ccb1555268', '6064861bc25eaa5a5d2f9bf4');
+      expect(CommentsCache.prototype.getSingleCommentFromCache).toHaveBeenCalledWith(
+        '6027f77087c9d9ccb1555268',
+        '6064861bc25eaa5a5d2f9bf4'
+      );
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
         message: `Comment by id ${commentId}`,
