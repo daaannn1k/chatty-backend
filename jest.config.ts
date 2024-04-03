@@ -27,6 +27,7 @@ const config = {
     '@post/(.*)': ['<rootDir>/src/features/post/$1'],
     '@reactions/(.*)': ['<rootDir>/src/features/reactions/$1'],
     '@comments/(.*)': ['<rootDir>/src/features/comments/$1'],
+    '@followers/(.*)': ['<rootDir>/src/features/followers/$1'],
     '@global/(.*)': ['<rootDir>/src/shared/globals/$1'],
     '@services/(.*)': ['<rootDir>/src/shared/services/$1'],
     '@socket/(.*)': ['<rootDir>/src/shared/sockets/$1'],

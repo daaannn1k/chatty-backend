@@ -17,6 +17,8 @@ import { config } from '@root/config';
 import applicationRoutes from '@root/routes';
 import { CustomError, IErrorResponse } from '@global/helpers/error-handler';
 import { SocketIOPostHandler } from '@socket/post';
+import { SocketIOFollowerHandler } from '@socket/follower';
+import { SocketIOUserHandler } from '@socket/user';
 
 const SERVER_PORT = 5000;
 const log: Logger = config.createLogger('server');
@@ -69,7 +71,9 @@ export class ChattyServer {
   }
 
   private globalErrorHandler(app: Application): void {
-    console.log(listAppEndpoints(app._router));
+    if (config.NODE_ENV === 'development') {
+      log.info(listAppEndpoints(app._router));
+    }
     app.all('*', (req: Request, res: Response) => {
       res.status(HTTP_STATUS.NOT_FOUND).json({ message: `${req.originalUrl} not found` });
     });
@@ -120,6 +124,10 @@ export class ChattyServer {
 
   private socketIOConnections(io: Server): void {
     const postsSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
+    const followerSocketHandler: SocketIOFollowerHandler = new SocketIOFollowerHandler(io);
+    const userSocketHandler: SocketIOUserHandler = new SocketIOUserHandler(io);
     postsSocketHandler.listen();
+    followerSocketHandler.listen();
+    userSocketHandler.listen();
   }
 }

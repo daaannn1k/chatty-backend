@@ -56,11 +56,10 @@ export class SignUp {
 
     //Add to database
 
-    omit(userDataForCache, ['username', 'password', 'uId', 'avatarColor', 'email']);
+    const userResult = omit(userDataForCache, ['username', 'password', 'uId', 'avatarColor', 'email']);
 
-    const authUserToSave: IUserDocument = { ...userDataForCache, _id: authObjectId } as IUserDocument;
-    authQueue.addAuthUserJob('addAuthUserToDB', { value: authUserToSave });
-    userQueue.addUserJob('addUserToDB', { value: userDataForCache });
+    authQueue.addAuthUserJob('addAuthUserToDB', { value: authData });
+    userQueue.addUserJob('addUserToDB', { value: userResult });
 
     const userJWT: string = SignUp.prototype.signToken(authData, userObjectId);
     req.session = { jwt: userJWT };

@@ -55,6 +55,15 @@ export const authUserPayload: AuthPayload = {
   iat: 12345
 };
 
+export const authUserPayload2: AuthPayload = {
+  userId: '65f060a14feaaea37dc2fa84',
+  uId: '1621613119252066',
+  username: 'Manny',
+  email: 'manny@me.com',
+  avatarColor: '#9c27b0',
+  iat: 12345
+};
+
 export const authMock = {
   _id: '60263f14648fed5246e322d3',
   uId: '1621613119252066',

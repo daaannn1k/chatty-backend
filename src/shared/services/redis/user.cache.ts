@@ -80,7 +80,6 @@ export class UserCache extends BaseCache {
       }
 
       const response: IUserDocument = (await this.client.HGETALL(`users:${userId}`)) as unknown as IUserDocument;
-      console.log('RESPONSE', response);
       const formattedResponse: IUserDocument = Helpers.formatObject(response);
       formattedResponse.createdAt = new Date(`${formattedResponse.createdAt}`);
       formattedResponse.uId = response.uId;
