@@ -14,6 +14,7 @@ export class Add {
   @joiValidation(addCommentSchema)
   public async comment(req: Request, res: Response): Promise<void> {
     const { userTo, comment, postId, profilePicture } = req.body;
+    //to check the profilePicture. Is it a sender's profilePicture or a receiver's profilePicture
     const userFrom: string = req.currentUser!.username;
     const userFromId: string = req.currentUser!.userId;
     const avatarColor: string = req.currentUser!.avatarColor;

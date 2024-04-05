@@ -8,6 +8,11 @@ import { IUserDocument } from '@user/interfaces/user.interace';
 import { IPostDocument } from '@post/interfaces/post.interface';
 import mongoose from 'mongoose';
 import { Helpers } from '@global/helpers/helpers';
+import { INotificationDocument, INotificationTemplate } from '@notifications/interfaces/notification.interface';
+import { NotificationModel } from '@notifications/models/notification.schema';
+import { socketIONotificationObject } from '@socket/notification';
+import { notificationTemplate } from '@services/emails/templates/notification/notification-template';
+import { emailQueue } from '@services/queues/email.queue';
 
 const userCache: UserCache = new UserCache();
 export class ReactionService {
@@ -32,7 +37,36 @@ export class ReactionService {
       )
     ])) as unknown as [IUserDocument, IReactionDocument, IPostDocument];
 
-    //send reaction notification;
+    if (updatedReaction[0].notifications.reactions && userFrom !== userTo) {
+      const notificationModel: INotificationDocument = new NotificationModel();
+      const notifications = await notificationModel.insertNotification({
+        userFrom: userFrom as string,
+        userTo: userTo as string,
+        message: `${username} reacted to your post`,
+        notificationType: 'reactions',
+        entityId: new mongoose.Types.ObjectId(postId),
+        createdItemId: new mongoose.Types.ObjectId(updatedReaction[1]._id),
+        createdAt: new Date(),
+        comment: '',
+        post: updatedReaction[2].post,
+        reaction: type!,
+        imgId: updatedReaction[2].imgId!,
+        imgVersion: updatedReaction[2].imgVersion!,
+        gifUrl: updatedReaction[2].gifUrl!
+      });
+      socketIONotificationObject.emit('insert notification', notifications, { userTo });
+      const templateParams: INotificationTemplate = {
+        username: updatedReaction[0].username!,
+        message: `${username} commented on your post`,
+        header: 'Post reaction notification'
+      };
+      const template: string = notificationTemplate.notificationTemplate(templateParams);
+      emailQueue.addEmailJob('reactionsEmail', {
+        receiverEmail: updatedReaction[0].email!,
+        template,
+        subject: 'Post reaction notification'
+      });
+    }
   }
 
   public async getPostReactions(query: IQueryReaction, sort: Record<string, 1 | -1>): Promise<[IReactionDocument[], number]> {
