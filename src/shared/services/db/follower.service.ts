@@ -43,7 +43,6 @@ class FollowerService {
       UserModel.findOne({ _id: followeeId })
     ]);
     const user: IUserDocument = (await userCache.getUserFromCache(followeeId)) as IUserDocument;
-    console.log('RESPONSE USER', user.email);
     if (response[1]?.notifications.follows && userId !== followeeId) {
       const notificationModel: INotificationDocument = new NotificationModel();
       const notifications = await notificationModel.insertNotification({

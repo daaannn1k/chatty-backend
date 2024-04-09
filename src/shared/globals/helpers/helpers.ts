@@ -42,4 +42,9 @@ export class Helpers {
       return acc;
     }, {} as any);
   }
+
+  static isDataURL(value: string): boolean {
+    const dataURLRegex = /^\s*data:([a-z]+\/[a-z0-9-+.]+(;[a-z-]+=[a-z0-9-]+)?)?(;base64)?,([a-z0-9!$&',()*+;=\-._~:@\\/?%\s]*)\s*$/i;
+    return dataURLRegex.test(value);
+  }
 }
