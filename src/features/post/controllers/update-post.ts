@@ -10,6 +10,7 @@ import { IPostDocument } from '@post/interfaces/post.interface';
 import { UploadApiResponse } from 'cloudinary';
 import { BadRequestError } from '@global/helpers/error-handler';
 import { uploads } from '@global/helpers/cloudinary-upload';
+import { imageQueue } from '@services/queues/image.queue';
 
 const postCache: PostCache = new PostCache();
 
@@ -46,6 +47,7 @@ export class Update {
         throw new BadRequestError(result.message);
       }
     }
+
     res.status(HTTP_STATUS.OK).json({ message: 'Post with image updated successfully' });
   }
 
@@ -89,7 +91,11 @@ export class Update {
     const postUpdated: IPostDocument = (await postCache.updatePostInCache(postId, updatedPost)) as IPostDocument;
     socketIOPostObject.emit('update post', postUpdated, 'posts');
     postQueue.addPostJob('updatePostInDB', { key: postId, value: updatedPost });
-
+    imageQueue.addImageJob('addImageToDB', {
+      key: `${req.currentUser!.userId}`,
+      imgId: result.public_id,
+      imgVersion: result.version.toString()
+    });
     return result;
   }
 }

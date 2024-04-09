@@ -10,7 +10,6 @@ export const reactionsCache: ReactionsCache = new ReactionsCache();
 export class Remove {
   public async reaction(req: Request, res: Response): Promise<void> {
     const { postId, previousReaction, postReactions } = req.params;
-    console.log(typeof req.currentUser!.username);
     const reactionToDelete: IReactionJob = {
       username: req.currentUser!.username,
       postId,
