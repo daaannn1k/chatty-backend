@@ -68,4 +68,4 @@ export const existingUserTwo = {
   bgImageId: '',
   profilePicture: '',
   createdAt: '2022-08-31T07:42:24.451Z'
-};
+} as unknown as IUserDocument;
