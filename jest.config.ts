@@ -30,6 +30,7 @@ const config = {
     '@followers/(.*)': ['<rootDir>/src/features/followers/$1'],
     '@notifications/(.*)': ['<rootDir>/src/features/notifications/$1'],
     '@images/(.*)': ['<rootDir>/src/features/images/$1'],
+    '@chat/(.*)': ['<rootDir>/src/features/chat/$1'],
     '@global/(.*)': ['<rootDir>/src/shared/globals/$1'],
     '@services/(.*)': ['<rootDir>/src/shared/services/$1'],
     '@socket/(.*)': ['<rootDir>/src/shared/sockets/$1'],
