@@ -47,4 +47,19 @@ export class Helpers {
     const dataURLRegex = /^\s*data:([a-z]+\/[a-z0-9-+.]+(;[a-z-]+=[a-z0-9-]+)?)?(;base64)?,([a-z0-9!$&',()*+;=\-._~:@\\/?%\s]*)\s*$/i;
     return dataURLRegex.test(value);
   }
+
+  static shuffle(list: string[]): string[] {
+    const maxIndex = list.length - 1;
+    for (let index = 0; index < list.length; index++) {
+      const randomIndex = Math.floor(Math.random() * maxIndex);
+      const temp = list[index];
+      list[index] = list[randomIndex];
+      list[randomIndex] = temp;
+    }
+    return list;
+  }
+
+  static escapeRegex(text: string): string {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+  }
 }

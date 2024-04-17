@@ -80,7 +80,7 @@ export interface IUserJob {
   keyOne?: string;
   keyTwo?: string;
   key?: string;
-  value?: string | INotificationSettings | IUserDocument;
+  value?: string | INotificationSettings | IUserDocument | IBasicInfo | ISocialLinks;
 }
 
 export interface IEmailJob {
@@ -90,6 +90,6 @@ export interface IEmailJob {
 }
 
 export interface IAllUsers {
-  users: IUserDocument[];
+  users: IUserDocument[] | null;
   totalUsers: number;
 }

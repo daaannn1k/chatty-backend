@@ -5,7 +5,7 @@ import { BullAdapter } from '@bull-board/api/bullAdapter';
 import { ExpressAdapter } from '@bull-board/express';
 import { config } from '@root/config';
 import { IAuthJob } from '@auth/interfaces/auth.interface';
-import { IEmailJob } from '@user/interfaces/user.interace';
+import { IEmailJob, IUserJob } from '@user/interfaces/user.interace';
 import { IPostJobData } from '@post/interfaces/post.interface';
 import { IReactionJob } from '@reactions/interfaces/reaction.interface';
 import { ICommentJob } from '@comments/interfaces/comment.interface';
@@ -25,7 +25,8 @@ type IBaseJobData =
   | INotificationJobData
   | IFileImageJobData
   | IChatJobData
-  | IMessageData;
+  | IMessageData
+  | IUserJob;
 
 let bullAdapters: BullAdapter[] = [];
 

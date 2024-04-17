@@ -16,12 +16,14 @@ export class CurrentUser {
     const cachedUser: IUserDocument = (await userCache.getUserFromCache(`${req.currentUser!.userId}`)) as IUserDocument;
     const existingUser: IUserDocument = cachedUser ? cachedUser : await userService.getUserById(`${req.currentUser!.userId}`);
 
+    const users = await userService.getAllUsers('660d1093a704a4ee517cd335', 0, 10);
+
     if (Object.keys(existingUser).length) {
       isUser = true;
       token = req.session!.jwt;
       user = existingUser;
     }
 
-    res.status(HTTP_STATUS.OK).json({ token, isUser, user });
+    res.status(HTTP_STATUS.OK).json({ token, isUser, user, users });
   }
 }
