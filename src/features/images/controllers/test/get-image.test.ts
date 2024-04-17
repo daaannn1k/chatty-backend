@@ -20,7 +20,6 @@ describe('Get', () => {
     const req: Request = imagesMockRequest({}, {}, authUserPayload, { imageId: '12345' }) as Request;
     const res: Response = imagesMockResponse();
     jest.spyOn(imageService, 'getImages').mockResolvedValue([fileDocumentMock]);
-    console.log(authUserPayload.userId);
     await Get.prototype.images(req, res);
     expect(imageService.getImages).toHaveBeenCalledWith(req.params.userId);
     expect(res.status).toHaveBeenCalledWith(200);

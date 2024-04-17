@@ -57,7 +57,7 @@ export class Password {
 
     const templateParams: IResetPasswordParams = {
       username: foundUser.username,
-      email: foundUser.username,
+      email: foundUser.email,
       ipaddress: publicIP.address(),
       date: moment().format('DD/MM/YYYY HH:mm')
     };
