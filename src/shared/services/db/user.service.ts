@@ -25,17 +25,11 @@ class UserService {
   }
 
   public async updateSocialLinks(userId: string, links: ISocialLinks): Promise<void> {
-    await UserModel.updateOne(
-      { _id: userId },
-      { $set: { social: links }}
-    ).exec();
+    await UserModel.updateOne({ _id: userId }, { $set: { social: links } }).exec();
   }
 
   public async updateNotificationSettings(userId: string, notifications: INotificationSettings): Promise<void> {
-    await UserModel.updateOne(
-      { _id: userId },
-      { $set: { notifications } }
-    ).exec();
+    await UserModel.updateOne({ _id: userId }, { $set: { notifications } }).exec();
   }
 
   public async getUserById(userId: string): Promise<IUserDocument> {

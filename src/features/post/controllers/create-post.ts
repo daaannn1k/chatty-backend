@@ -2,13 +2,13 @@ import { Request, Response } from 'express';
 import HTTP_STATUS from 'http-status-codes';
 import { ObjectId } from 'mongodb';
 
-import { postSchema, postWithImageSchema } from '@post/schemes/post.schemes';
+import { postSchema, postWithImageSchema, postWithVideoSchema } from '@post/schemes/post.schemes';
 import { joiValidation } from '@global/decorators/joi-validation.decorators';
 import { IPostDocument, ISavePostToCache } from '@post/interfaces/post.interface';
 import { PostCache } from '@services/redis/post.cache';
 import { socketIOPostObject } from '@socket/post';
 import { postQueue } from '@services/queues/post.queue';
-import { uploads } from '@global/helpers/cloudinary-upload';
+import { uploads, videoUpload } from '@global/helpers/cloudinary-upload';
 import { BadRequestError } from '@global/helpers/error-handler';
 import { UploadApiResponse } from 'cloudinary';
 import { imageQueue } from '@services/queues/image.queue';
@@ -36,6 +36,8 @@ export class Create {
       commentsCount: 0,
       imgVersion: '',
       imgId: '',
+      videoVersion: '',
+      videoId: '',
       createdAt: new Date(),
       reactions: { like: 0, love: 0, happy: 0, wow: 0, sad: 0, angry: 0 }
     } as IPostDocument;
@@ -81,6 +83,8 @@ export class Create {
       commentsCount: 0,
       imgVersion: result.version.toString(),
       imgId: result.public_id,
+      videoVersion: '',
+      videoId: '',
       createdAt: new Date(),
       reactions: { like: 0, love: 0, happy: 0, wow: 0, sad: 0, angry: 0 }
     } as IPostDocument;
@@ -103,5 +107,52 @@ export class Create {
     });
 
     res.status(HTTP_STATUS.CREATED).json({ message: 'Post with image created successfully' });
+  }
+
+  @joiValidation(postWithVideoSchema)
+  public async postWithVideo(req: Request, res: Response): Promise<void> {
+    const { post, bgColor, privacy, gifUrl, profilePicture, feelings, video } = req.body;
+
+    const result: UploadApiResponse = (await videoUpload(video)) as UploadApiResponse;
+
+    if (!result.public_id) {
+      throw new BadRequestError(result.message);
+    }
+
+    const postObjectId = new ObjectId();
+    const createdPost: IPostDocument = {
+      _id: postObjectId,
+      userId: req.currentUser!.userId,
+      username: req.currentUser!.username,
+      email: req.currentUser!.email,
+      avatarColor: req.currentUser!.avatarColor,
+      profilePicture,
+      post,
+      bgColor,
+      privacy,
+      gifUrl,
+      feelings,
+      commentsCount: 0,
+      imgId: '',
+      imgVersion: '',
+      videoVersion: result.version.toString(),
+      videoId: result.public_id,
+      createdAt: new Date(),
+      reactions: { like: 0, love: 0, happy: 0, wow: 0, sad: 0, angry: 0 }
+    } as IPostDocument;
+
+    socketIOPostObject.emit('add post', createdPost);
+
+    const cacheDataToSave: ISavePostToCache = {
+      key: postObjectId,
+      currentUserId: `${req.currentUser!.userId}`,
+      uId: `${req.currentUser!.uId}`,
+      createdPost
+    };
+
+    await postCache.savePostToCache(cacheDataToSave);
+    postQueue.addPostJob('addPostToDB', { key: req.currentUser!.userId, value: createdPost });
+
+    res.status(HTTP_STATUS.CREATED).json({ message: 'Post with video created successfully' });
   }
 }

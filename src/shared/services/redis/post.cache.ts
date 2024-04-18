@@ -35,7 +35,9 @@ export class PostCache extends BaseCache {
       imgVersion,
       imgId,
       reactions,
-      createdAt
+      createdAt,
+      videoId,
+      videoVersion
     } = createdPost;
 
     const dataToSave = {
@@ -53,6 +55,8 @@ export class PostCache extends BaseCache {
       commentsCount: `${commentsCount}`,
       imgVersion: `${imgVersion}`,
       imgId: `${imgId}`,
+      videoId: `${videoId}`,
+      videoVersion: `${videoVersion}`,
       reactions: JSON.stringify(reactions),
       createdAt: `${createdAt}`
     };
@@ -218,7 +222,7 @@ export class PostCache extends BaseCache {
   }
 
   public async updatePostInCache(key: string, updatedPost: IPostDocument): Promise<IPostDocument> {
-    const { post, bgColor, feelings, privacy, gifUrl, imgVersion, imgId, profilePicture } = updatedPost;
+    const { post, bgColor, feelings, privacy, gifUrl, imgVersion, imgId, profilePicture, videoId, videoVersion } = updatedPost;
     const dataToSave = {
       post: `${post}`,
       bgColor: `${bgColor}`,
@@ -227,7 +231,9 @@ export class PostCache extends BaseCache {
       gifUrl: `${gifUrl}`,
       imgVersion: `${imgVersion}`,
       imgId: `${imgId}`,
-      profilePicture: `${profilePicture}`
+      profilePicture: `${profilePicture}`,
+      videoVersion: `${videoVersion}`,
+      videoId: `${videoId}`
     };
 
     try {
@@ -246,6 +252,38 @@ export class PostCache extends BaseCache {
       post[0].reactions = Helpers.parseJson(`${post[0].reactions}`) as IReactions;
       post[0].createdAt = new Date(Helpers.parseJson(`${post[0].createdAt}`)) as Date;
       return post[0];
+    } catch (error) {
+      log.error(error);
+      throw new ServerError('Server error. Try again');
+    }
+  }
+
+  public async getPostsWithVideosFromCache(key: string, start: number, end: number): Promise<IPostDocument[]> {
+    try {
+      if (!this.client.isOpen) {
+        await this.client.connect();
+      }
+
+      const reply: string[] = await this.client.ZRANGE(key, start, end, { REV: true });
+      const multi: ReturnType<typeof this.client.multi> = this.client.multi();
+
+      for (const value of reply) {
+        multi.HGETALL(`posts:${value}`);
+      }
+
+      const replies: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
+      const postReplies: IPostDocument[] = [];
+
+      for (const post of replies as IPostDocument[]) {
+        if (post.videoId && post.videoVersion) {
+          post.commentsCount = Helpers.parseJson(`${post.commentsCount}`) as number;
+          post.reactions = Helpers.parseJson(`${post.reactions}`) as IReactions;
+          post.createdAt = new Date(Helpers.parseJson(`${post.createdAt}`)) as Date;
+          postReplies.push(post);
+        }
+      }
+
+      return postReplies;
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try again');
