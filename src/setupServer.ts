@@ -12,6 +12,7 @@ import compression from 'compression';
 import 'express-async-errors';
 import Logger from 'bunyan';
 import listAppEndpoints from 'express-list-endpoints';
+import swStats from 'swagger-stats';
 
 import { config } from '@root/config';
 import applicationRoutes from '@root/routes';
@@ -37,8 +38,13 @@ export class ChattyServer {
     this.securityMiddleware(this.app);
     this.standartMiddleware(this.app);
     this.routesMiddleware(this.app);
+    this.apiMonitor(this.app);
     this.globalErrorHandler(this.app);
     this.startServer(this.app);
+  }
+
+  private apiMonitor(app: Application): void {
+    app.use(swStats.getMiddleware({}));
   }
 
   private securityMiddleware(app: Application): void {
@@ -93,6 +99,9 @@ export class ChattyServer {
   }
 
   private async startServer(app: Application): Promise<void> {
+    if (!config.JWT_TOKEN) {
+      throw new Error('JWT_TOKEN must be provided');
+    }
     try {
       const httpServer: http.Server = new http.Server(app);
       const socketIO: Server = await this.createSocketIO(httpServer);
@@ -119,6 +128,7 @@ export class ChattyServer {
   }
 
   private startHttpServer(httpServer: http.Server): void {
+    log.info(`Worker with process id of ${process.pid} has started ...`);
     log.info(`Server has started with process ${process.pid}`);
     httpServer.listen(SERVER_PORT, () => {
       log.info(`Server running on port ${SERVER_PORT}`);

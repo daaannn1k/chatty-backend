@@ -19,7 +19,12 @@ class Config {
   public SENDER_EMAIL_PASSWORD: string | undefined;
   public SENDGRID_API_KEY: string | undefined;
   public SENDGRID_SENDER: string | undefined;
+  public MAILJET_SENDER_EMAIL: string | undefined;
+  public MAILJET_API_KEY: string | undefined;
+  public MAILJET_SECRET_KEY: string | undefined;
   public EC2_URL: string | undefined;
+  public ELASTIC_KEY: string | undefined;
+  public ELASTIC_EMAIL: string | undefined;
 
   private DEFAULT_DATABASE_URL: string = 'mongodb://localhost:27017/chattyapp-backend';
 
@@ -38,7 +43,12 @@ class Config {
     this.SENDER_EMAIL_PASSWORD = process.env.SENDER_EMAIL_PASSWORD || '';
     this.SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '';
     this.SENDGRID_SENDER = process.env.SENDGRID_SENDER || '';
+    this.MAILJET_SENDER_EMAIL = process.env.MAILJET_SENDER_EMAIL || '';
+    this.MAILJET_API_KEY = process.env.MAILJET_API_KEY || '';
+    this.MAILJET_SECRET_KEY = process.env.MAILJET_SECRET_KEY || '';
     this.EC2_URL = process.env.EC2_URL || '';
+    this.ELASTIC_KEY = process.env.ELASTIC_KEY || '';
+    this.ELASTIC_EMAIL = process.env.ELASTIC_EMAIL || '';
   }
 
   public createLogger(name: string): bunyan {
