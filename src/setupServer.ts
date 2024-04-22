@@ -11,10 +11,18 @@ import { createAdapter } from '@socket.io/redis-adapter';
 import compression from 'compression';
 import 'express-async-errors';
 import Logger from 'bunyan';
+import listAppEndpoints from 'express-list-endpoints';
+import swStats from 'swagger-stats';
 
-import { config } from './config';
-import applicationRoutes from './routes';
-import { CustomError, IErrorResponse } from './shared/globals/helpers/error-handler';
+import { config } from '@root/config';
+import applicationRoutes from '@root/routes';
+import { CustomError, IErrorResponse } from '@global/helpers/error-handler';
+import { SocketIOPostHandler } from '@socket/post';
+import { SocketIOFollowerHandler } from '@socket/follower';
+import { SocketIOUserHandler } from '@socket/user';
+import { SocketIONotificationHandler } from '@socket/notification';
+import { SocketIOImageHandler } from '@socket/image';
+import { SocketIOChatHandler } from '@socket/chat';
 
 const SERVER_PORT = 5000;
 const log: Logger = config.createLogger('server');
@@ -30,8 +38,13 @@ export class ChattyServer {
     this.securityMiddleware(this.app);
     this.standartMiddleware(this.app);
     this.routesMiddleware(this.app);
+    this.apiMonitor(this.app);
     this.globalErrorHandler(this.app);
     this.startServer(this.app);
+  }
+
+  private apiMonitor(app: Application): void {
+    app.use(swStats.getMiddleware({}));
   }
 
   private securityMiddleware(app: Application): void {
@@ -67,6 +80,9 @@ export class ChattyServer {
   }
 
   private globalErrorHandler(app: Application): void {
+    if (config.NODE_ENV === 'development') {
+      log.info(listAppEndpoints(app._router));
+    }
     app.all('*', (req: Request, res: Response) => {
       res.status(HTTP_STATUS.NOT_FOUND).json({ message: `${req.originalUrl} not found` });
     });
@@ -83,6 +99,9 @@ export class ChattyServer {
   }
 
   private async startServer(app: Application): Promise<void> {
+    if (!config.JWT_TOKEN) {
+      throw new Error('JWT_TOKEN must be provided');
+    }
     try {
       const httpServer: http.Server = new http.Server(app);
       const socketIO: Server = await this.createSocketIO(httpServer);
@@ -109,11 +128,26 @@ export class ChattyServer {
   }
 
   private startHttpServer(httpServer: http.Server): void {
+    log.info(`Worker with process id of ${process.pid} has started ...`);
     log.info(`Server has started with process ${process.pid}`);
     httpServer.listen(SERVER_PORT, () => {
       log.info(`Server running on port ${SERVER_PORT}`);
     });
   }
 
-  private socketIOConnections(io: Server): void {}
+  private socketIOConnections(io: Server): void {
+    const postsSocketHandler: SocketIOPostHandler = new SocketIOPostHandler(io);
+    const followerSocketHandler: SocketIOFollowerHandler = new SocketIOFollowerHandler(io);
+    const userSocketHandler: SocketIOUserHandler = new SocketIOUserHandler(io);
+    const notificationSocketHandler: SocketIONotificationHandler = new SocketIONotificationHandler();
+    const imageSocketHandler: SocketIOImageHandler = new SocketIOImageHandler();
+    const chatSocketHandler: SocketIOChatHandler = new SocketIOChatHandler(io);
+
+    postsSocketHandler.listen();
+    followerSocketHandler.listen();
+    userSocketHandler.listen();
+    notificationSocketHandler.listen(io);
+    imageSocketHandler.listen(io);
+    chatSocketHandler.listen();
+  }
 }
