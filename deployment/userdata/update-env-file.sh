@@ -1,6 +1,6 @@
 #!/bin/bash
 
-aws s3 sync s3://chatapp-env-files-vvd/develop .
+aws s3 sync s3://chatapp-env-files-vvd/staging .
 unzip env-file.zip
 cp .env.staging .env
 rm .env.staging
