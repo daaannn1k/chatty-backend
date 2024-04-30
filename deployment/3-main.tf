@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket  = "chatty-app-terraform-state-vvd"
-    key     = "staging/chatapp.tfstate"
+    key     = "production/chatapp.tfstate"
     region  = "eu-west-1"
     encrypt = true
   }
